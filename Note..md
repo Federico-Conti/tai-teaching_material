@@ -131,3 +131,41 @@ A ε = 0.6, il 20% dei campioni richiede una perturbazione più grande per esser
 
 - So esattamente per ogni campione quanto devi perturbare per evaderlo.
 
+## Adversal Patch 
+
+Gli adversarial patches rappresentano un tentativo di portare gli attacchi avversari dal dominio digitale al mondo reale. Mentre i tradizionali attacchi avversari aggiungono rumore digitale alle immagini per ingannare i modelli di machine learning, questi rumori non funzionano direttamente nel mondo fisico a causa di variabili come luce, prospettiva, contesto e alterazioni cromatiche introdotte da stampanti o proiettori. Gli adversarial patches sono oggetti fisici progettati per produrre effetti avversari nel mondo reale, superando le limitazioni degli attacchi puramente digitali.
+
+### Metodo 
+
+1. **Adversarial Patch**: Uno sticker rettangolare progettato per ingannare un modello di object detection, modificando solo una parte dell'immagine.
+
+2. **Regione di Interesse**: Per limitare l'attacco a una specifica area, si utilizza una maschera (tensor rettangolare) che vale 1 nella zona da perturbare e 0 altrove. Durante la gradient descent, i gradienti vengono moltiplicati per questa maschera.
+
+3. **Rimozione del vincolo di epsilon**: Permette perturbazioni libere per creare sticker visibili e più efficaci nel mondo fisico.
+
+Per rendere la patch robusta a trasformazioni (rotazioni, traslazioni, scalature, illuminazione), si accumulano gradienti su più posizioni casuali.
+Questo aumenta il costo computazionale, poiché il numero di forward e backward pass cresce con il numero di iterazioni e trasformazioni simulate.
+
+## Defending against Adversarial Examples
+
+L’obiettivo è addestrare il modello non solo sui dati normali, ma anche su esempi avversari, così il modello impara a essere robusto.  
+In teoria, si dovrebbe risolvere un problema di ottimizzazione “min-max” (minimizzare la loss del modello, massimizzando al tempo stesso l’errore tramite un attaccante). Questo non è risolvibile direttamente e sarebbe costosissimo da fare “bene”.
+
+Per esempio, usare PGD durante il training significherebbe:  
+
+- Per ogni immagine del training, per ogni epoca,  
+- Lanciare un attacco iterativo di decine/centinaia di passi.  
+È troppo lento.  
+
+Quindi si usano approssimazioni più leggere.
+
+Si propone una versione rudimentale FGMS (Fast Gradient Sign Method):  
+
+Per una sola iterazione di training:
+
+1. Prendi un batch.  
+2. Calcoli il gradiente della loss rispetto all’input.  
+3. Usando questo gradiente e il suo segno, crei un esempio avversario molto rapido (FGSM) andando nella direzione dove aumenta la loss.  
+4. Alleni il modello sugli esempi avversari generati al volo.
+
+
