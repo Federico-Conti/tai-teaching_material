@@ -6,8 +6,8 @@ Immaginiamo di aver calcolato questi due attacchi su un modello **A**, e poi di 
   - Migliore per testare la robustezza di altri modelli o modelli “ignoti” (**black-box**), perché non si adatta al confine ma “ignora” la geometria locale e va in profondità.
   
 - Gli attacchi **FMN minimum-norm** si adattano alla forma del confine su cui sono stati generati. Se il confine cambia anche solo un po’, l’attacco potrebbe non funzionare più.
-  - non si omposta epsilon 
-  -  Ottimo per analizzare la robustezza del modello che possedete (fornisce per ogni campione la distanza esatta dal confine).
+  - non si imposta epsilon 
+  - ottimo per analizzare la robustezza del modello che possedete (fornisce per ogni campione la distanza esatta dal confine).
 
 ### Trinità degli Attacchi Evasion
 
